@@ -1,63 +1,114 @@
-import { Component } from 'react';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as yup from 'yup';
+import styled from 'styled-components';
+import { Btn } from './FormContacts.styled';
+import { Label } from './FormContacts.styled';
 
-export class FormContacts extends Component {
-  state = {
-    name: '',
-    number: '',
-  };
+const schema = yup.object().shape({
+  name: yup.string().required(),
+  number: yup.string().min(9).max(9).required(),
+});
 
-  handleChange = evt => {
-    const { name, value } = evt.currentTarget;
-    this.setState({
-      [name]: value,
-    });
-  };
+const initialValues = { name: '', number: '' };
 
-  handleSubmit = event => {
-    event.preventDefault();
-    console.log(this.state);
-    const { name, number } = this.state;
-    console.log(`name: ${name}, number: ${number}`);
-    this.props.onSubmit({ ...this.state });
-    this.reset();
-  };
+const FormData = styled(Form)`
+  display: block;
+  border: 1px solid black;
+  padding: 20px 200px 20px 30px;
+  background-color: #c0c0c0;
+`;
 
-  reset = () => {
-    this.setState({ ...this.state });
-  };
+const Input = styled(Field)`
+  display: block;
+  padding: 10px 10px;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 4px;
+  font: 0.6em 'typewriter', sans-serif;
+  color: black;
+  outline: none;
+  transition: border 250ms cubic-bezier(0.4, 0, 0.2, 1);
 
-  render() {
-    const { name, number } = this.state;
-    return (
-      <>
-        <form onSubmit={this.handleSubmit}>
-          <label>
-            Name
-            <input
-              type="text"
-              name="name"
-              pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-              title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-              required
-              value={name}
-              onChange={this.handleChange}
-            />
-          </label>
-          <label>
-            Number
-            <input
-              type="tel"
-              name="number"
-              pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-              title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-              required
-              value={number}
-              onChange={this.handleChange}
-            />
-          </label>
-          <button>Add contact</button>
-        </form>
-      </>
-    );
+  &:hover,
+  &:focus {
+    border: 2px solid #4169e1;
   }
-}
+`;
+const ErrorText = styled.p`
+  font: 0.6em 'typewriter', sans-serif;
+  color: red;
+  margin-top: 5px;
+`;
+
+const FormError = ({ name }) => {
+  return (
+    <ErrorMessage
+      name={name}
+      render={message => <ErrorText>{message}</ErrorText>}
+    />
+  );
+};
+
+// export class FormContacts extends Component {
+
+// state = {
+//   name: '',
+//   number: '',
+// };
+
+// handleChange = evt => {
+//   const { name, value } = evt.currentTarget;
+//   this.setState({
+//     [name]: value,
+//   });
+// };
+
+// handleSubmit = evt => {
+//   evt.preventDefault();
+
+//   this.props.onSubmit(this.state);
+
+//   this.reset();
+// };
+
+// reset = () => {
+//   this.setState({ name: '', number: '' });
+// };
+
+export const FormContacts = ({ onSubmit }) => {
+  const handleSubmit = (values, { resetForm }) => {
+    console.log(values);
+    resetForm();
+    onSubmit(values);
+    //   evt.preventDefault();
+    //   this.props.onSubmit(this.state);
+    //   this.reset();
+  };
+
+  // reset = () => {
+  //   this.setState({ name: '', number: '' });
+  // };
+  return (
+    <Formik
+      initialValues={initialValues}
+      validationSchema={schema}
+      onSubmit={handleSubmit}
+    >
+      <FormData>
+        <Label>
+          Name
+          <br />
+          <Input type="text" name="name" placeholder="Rosie Simpson" />
+          <FormError name="name" component="div" />
+        </Label>
+        <Label>
+          Number
+          <br />
+          <Input type="tel" name="number" placeholder="345-45-45" />
+          <FormError name="number" component="div" />
+        </Label>
+        <Btn type="submit">Add contact</Btn>
+      </FormData>
+    </Formik>
+  );
+};

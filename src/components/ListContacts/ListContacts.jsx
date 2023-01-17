@@ -1,19 +1,22 @@
 import PropTypes from 'prop-types';
 import ItemContact from 'components/ItemContact/ItemContact';
+import { Item } from './ListContacts.styled';
+import { List } from './ListContacts.styled';
 
 const ListContacts = ({ contacts, onDeleteContact }) => {
   return (
-    <ul>
+    <List>
       {contacts.map(contact => (
-        <li key={contact.id}>
+        <Item key={contact.id}>
           <ItemContact
+            id={contact.id}
             name={contact.name}
             number={contact.number}
             onDelete={onDeleteContact}
           />
-        </li>
+        </Item>
       ))}
-    </ul>
+    </List>
   );
 };
 

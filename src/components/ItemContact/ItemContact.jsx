@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import { DataContact } from './ItemContact.styled';
 import { BtnDelete } from './ItemContact.styled';
 
-const ItemContact = ({ contact: { name, number }, onDelete }) => {
+const ItemContact = ({ id, name, number, onDelete }) => {
   return (
     <>
       <DataContact>
-        {name}:{number}
+        <span>{name}</span>: <span>{number}</span>
       </DataContact>
-      <BtnDelete type="button" onClick={onDelete}>
+      <BtnDelete type="button" onClick={() => onDelete(id)}>
         Delete
       </BtnDelete>
     </>
@@ -17,10 +17,8 @@ const ItemContact = ({ contact: { name, number }, onDelete }) => {
 };
 
 ItemContact.propTypes = {
-  contact: PropTypes.exact({
-    name: PropTypes.string.isRequired,
-    number: PropTypes.string.isRequired,
-    onDelete: PropTypes.func.isRequired,
-  }),
+  name: PropTypes.string.isRequired,
+  number: PropTypes.string.isRequired,
+  onDelete: PropTypes.func.isRequired,
 };
 export default ItemContact;
